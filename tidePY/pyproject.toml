@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tidePY"
+version = "0.1.0"
+description = "A CLI tool for fetching the tide"
+authors = [{ name = "Mike Kudrik" }]
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+
+[project.scripts]
+tideCLI = "cli:main"
