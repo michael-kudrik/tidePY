@@ -77,32 +77,30 @@ def fetchTideData(station_id, product='predictions', interval='hilo'):
 def format(tide_data):
         bars = "▁▂▃▄▅▆▇█"
         values = [float(entry.get('v')) for entry in tide_data]
-        max_height = max(values) if values else 1
+        max_height = max(values) if values else 1 #provides 1 if list is empty
         min_height = min(values) if values else 0
         # Identify the two lowest and two highest tide values
         sorted_values = sorted(values)
         low_tides = set(sorted_values[:2])
         high_tides = set(sorted_values[-2:])
         for entry in tide_data:
-                time_str = entry.get('t')
-                value = float(entry.get('v'))
-                try:
-                        dt = datetime.datetime.strptime(time_str, "%Y-%m-%d %H:%M")
-                        formatted_time = dt.strftime("%b %d, %Y %I:%M %p")
-                except Exception:
-                        formatted_time = time_str
-                index = int((value / max_height) * (len(bars)-1))
-                bar_char = bars[index]
-                output = f"{formatted_time:<20} | {value:>5.2f} ft {bar_char*10}"
-                if value in low_tides:
-                        print(f"\033[94m{output}\033[0m\n")  # Blue for low tide
-                elif value in high_tides:
-                        print(f"\033[91m{output}\033[0m\n")  # Red for high tide
-                else:
-                        print(f"{output}\n")
+            time_str = entry.get('t')
+            value = float(entry.get('v'))
+            try:
+                dt = datetime.datetime.strptime(time_str, "%Y-%m-%d %H:%M")
+                formatted_time = dt.strftime("%b %d, %Y %I:%M %p")
+            except Exception:
+                formatted_time = time_str
+            normalized_value = (value - min_height) / (max_height - min_height) if max_height != min_height else 0
+            index = int(normalized_value * (len(bars)-1))
+            bar_char = bars[index]
+            output = f"{formatted_time:<20} | {value:>5.2f} ft {bar_char*10}"
+            if value in low_tides:
+                print(f"\033[94m{output}\033[0m\n")  # Blue for low tide
+            elif value in high_tides:
+                print(f"\033[91m{output}\033[0m\n")  # Red for high tide
+            else:
+                print(f"{output}\n")
                 
-
-# tidePy.fetchTideData()
-
 if __name__ == "__main__":
       main()
