@@ -31,7 +31,10 @@ def main():
     if args.fetch:
             tide_data = fetchTideData(station_id, interval='hilo')
     elif args.list:
-           print("\n\nNEW YORK:\nMontauk - 8510560\nKings Point - 8516945\nThe Battery - 8518750\n\nNEW JERSEY:\nSandy Hook - 8531680\nAtlantic City - 8534720\nCape May - 8536110\n\nRHODE ISLAND:\nBlock Island - 8459338\nNewport - 8452660\nProvidence - 8454000\nQuonset Point - 8454049\nConimicut Light - 8452944\n\n")
+        print("\nAvailable Tide Locations:\n")
+        for name, station_id in STATIONS.items():
+            print(f"{name} - {station_id}")
+        print()
     else:
             print("Invalid argument.\nTry again.")
     if tide_data:
