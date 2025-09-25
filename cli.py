@@ -26,6 +26,8 @@ def main():
     location_name = args.location
     station_id = STATIONS.get(location_name)
 
+    tide_data = None
+
     if args.fetch:
             tide_data = fetchTideData(station_id, interval='hilo')
     elif args.list:
