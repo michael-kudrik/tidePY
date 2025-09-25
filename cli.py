@@ -2,18 +2,87 @@ import argparse
 import datetime
 import requests
 
-STATIONS = { # list of stations. used when running help
-    "Montauk": 8510560,
-    "Kings Point": 8516945,
-    "The Battery": 8518750,
-    "Sandy Hook": 8531680,
-    "Atlantic City": 8534720,
-    "Cape May": 8536110,
-    "Block Island": 8459338,
-    "Newport": 8452660,
-    "Providence": 8454000,
-    "Quonset Point": 8454049,
-    "Conimicut Light": 8452944
+STATIONS = {
+    "Montauk": {"id": 8510560, "state": "NY"},
+    "Kings Point": {"id": 8516945, "state": "NY"},
+    "The Battery": {"id": 8518750, "state": "NY"},
+    "Sandy Hook": {"id": 8531680, "state": "NJ"},
+    "Atlantic City": {"id": 8534720, "state": "NJ"},
+    "Cape May": {"id": 8536110, "state": "NJ"},
+    "Block Island": {"id": 8459338, "state": "RI"},
+    "Newport": {"id": 8452660, "state": "RI"},
+    "Providence": {"id": 8454000, "state": "RI"},
+    "Quonset Point": {"id": 8454049, "state": "RI"},
+    "Conimicut Light": {"id": 8452944, "state": "RI"},
+    "Eastport": {"id": 8410140, "state": "ME"},
+    "Cutler Farris Wharf": {"id": 8411060, "state": "ME"},
+    "Bar Harbor": {"id": 8413320, "state": "ME"},
+    "Portland": {"id": 8418150, "state": "ME"},
+    "Seavey Island": {"id": 8419870, "state": "ME"},
+    "Portland": {"id": 8418150, "state": "ME"},
+    "Boston": {"id": 8443970, "state": "MA"},
+    "Boston": {"id": 8443970, "state": "MA"},
+    "Chatham": {"id": 8447435, "state": "MA"},
+    "Nantucket Island": {"id": 8449130, "state": "MA"},
+    "Woods Hole": {"id": 8447930, "state": "MA"},
+    "New Bedford Harbor": {"id": 8447636, "state": "MA"},
+    "Fall River": {"id": 8447386, "state": "MA"},
+    "New London": {"id": 8461490, "state": "CT"},
+    "New Haven": {"id": 8465705, "state": "CT"},
+    "Bridgeport": {"id": 8467150, "state": "CT"},
+    "Lewes": {"id": 8557380, "state": "DE"},
+    "Ocean City Inlet": {"id": 8570283, "state": "MD"},
+    "Bishops Head": {"id": 8571421, "state": "MD"},
+    "Cambridge": {"id": 8571892, "state": "MD"},
+    "Annapolis": {"id": 8575512, "state": "MD"},
+    "Baltimore": {"id": 8574680, "state": "MD"},
+    "Chesapeake City": {"id": 8573927, "state": "MD"},
+    "Tolchester Beach": {"id": 8573364, "state": "MD"},
+    "Solomons Island": {"id": 8577330, "state": "MD"},
+    "Washington": {"id": 8594900, "state": "DC"},
+    "Washington": {"id": 8594900, "state": "DC"},
+    "Dahlgren": {"id": 8635027, "state": "VA"},
+    "Lewisetta": {"id": 8635750, "state": "VA"},
+    "Windmill Point": {"id": 8636580, "state": "VA"},
+    "Wachapreague": {"id": 8631044, "state": "VA"},
+    "Kiptopeke": {"id": 8632200, "state": "VA"},
+    "Sewells Point": {"id": 8638610, "state": "VA"},
+    "Money Point": {"id": 8639348, "state": "VA"},
+    "Chesapeake Channel": {"id": 8638901, "state": "VA"},
+    "Duck": {"id": 8651370, "state": "NC"},
+    "Jennette's Pier": {"id": 8652226, "state": "NC"},
+    "Beaufort": {"id": 8656483, "state": "NC"},
+    "Oregon Inlet Marina": {"id": 8652587, "state": "NC"},
+    "USCG Hatteras": {"id": 8654467, "state": "NC"},
+    "Wrightsville Beach": {"id": 8658163, "state": "NC"},
+    "Wilmington": {"id": 8658120, "state": "NC"},
+    "Springmaid Pier": {"id": 8661070, "state": "SC"},
+    "Charleston": {"id": 8665530, "state": "SC"},
+    "Fort Pulaski": {"id": 8670870, "state": "GA"},
+    "Kings Bay Pier": {"id": 8679598, "state": "GA"},
+    "Fernandina Beach": {"id": 8720030, "state": "FL"},
+    "Mayport": {"id": 8720218, "state": "FL"},
+    "Dames Point": {"id": 8720219, "state": "FL"},
+    "St Johns River": {"id": 8720226, "state": "FL"},
+    "Port Canaveral": {"id": 8721604, "state": "FL"},
+    "Lake Worth Pier": {"id": 8722670, "state": "FL"},
+    "South Port Everglades": {"id": 8722956, "state": "FL"},
+    "Virginia Key": {"id": 8723214, "state": "FL"},
+    "Vaca Key": {"id": 8723970, "state": "FL"},
+    "Virginia Key": {"id": 8723214, "state": "FL"},
+    "Key West": {"id": 8724580, "state": "FL"},
+    "Naples Bay": {"id": 8725114, "state": "FL"},
+    "Fort Myers": {"id": 8725520, "state": "FL"},
+    "Port Manatee": {"id": 8726384, "state": "FL"},
+    "St. Petersburg": {"id": 8726520, "state": "FL"},
+    "East Bay": {"id": 8726674, "state": "FL"},
+    "Clearwater Beach": {"id": 8726724, "state": "FL"},
+    "Cedar Key": {"id": 8727520, "state": "FL"},
+    "Apalachicola": {"id": 8728690, "state": "FL"},
+    "Panama City": {"id": 8729108, "state": "FL"},
+    "Panama City Beach": {"id": 8729210, "state": "FL"},
+    "Pensacola": {"id": 8729840, "state": "FL"},
+
 }
 
 
@@ -24,7 +93,8 @@ def main():
     parser.add_argument("-l","--list", action="store_true", help="displays list of available tide locations")
     args=parser.parse_args()
     location_name = args.location
-    station_id = STATIONS.get(location_name)
+    station_info = STATIONS.get(location_name)
+    station_id = station_info["id"] if station_info else None
 
     tide_data = None
 
@@ -32,8 +102,8 @@ def main():
             tide_data = fetchTideData(station_id, interval='hilo')
     elif args.list:
         print("\nAvailable Tide Locations:\n")
-        for name, station_id in STATIONS.items():
-            print(f"{name} - {station_id}")
+        for name, info in STATIONS.items():
+            print(f"{name} ({info['state']}) - {info['id']}")
         print()
     else:
             print("Invalid argument.\nTry again.")
