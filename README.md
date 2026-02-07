@@ -6,6 +6,7 @@
 ### Requirements
 - Python **3.10+**
 - `pip` (latest version recommended)
+- `pipx` is suggested for environments where python is managed by the system
 
 ### Steps
 
@@ -19,6 +20,7 @@
 
 ```bash
    pip install .
+#  pipx install .
 ```
 
 
@@ -38,4 +40,5 @@ If you ever want to remove it:
 
 ```bash
 pip uninstall tidePY
+pipx uninstall tidePY
 ```
